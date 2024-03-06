@@ -27,18 +27,18 @@ class Player{
         return [this.stats, update]
     }
 
-    playerSkill(){
-        let skill = new Skill();//TODO: action class
+    playerSkill(source, targets, techniques, priority){
+        let skill = new Skill(source, targets, techniques, priority);//TODO: action class
         //retrieve an available skill or construct a new one
         
-        return skill
+        return skill;
     }
 
-    playerMove(){
-        let move = new Move();//TODO: action class
+    playerMove(source, targets, techniques, priority){
+        let move = new Move(source, targets, techniques, priority);//TODO: action class
         //retrieve an available movement or construct a new one
         
-        return move
+        return move;
     }
 
     playerEffect(effect){

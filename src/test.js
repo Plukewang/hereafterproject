@@ -1,6 +1,6 @@
-import Player from "../utilities/player.js";
-import Stat from "../utilities/stats.js";
-import {Mod, Effect} from "../utilities/mods.js";
+import Player from "../player-side/player.js";
+import Stat from "../player-side/stats.js";
+import {Mod, Effect} from "../player-side/mods.js";
 
 function createPlayerStats(){
     let playerStat = new Map();
