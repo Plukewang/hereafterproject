@@ -1,10 +1,11 @@
 //the action class, for when the player actually acts
 class Action{
-    constructor(source, targets, techniques, priority){
+    constructor(source, targets, techniques, priority, flags){
         this.source = source;
         this.targets = targets;
         this.techniques = techniques;
         this.priority = priority;
+        this.flags = flags;
     }
 
     get from(){
@@ -23,12 +24,16 @@ class Action{
         return this.priority;
     }
 
+    get getFlags(){
+        return this.flags;
+    }
+
     occur(){
-        let events = [];
+        let effects = [];
         for(const tech of this.techniques){
-            events.push(tech.affect());
+            effects.push(tech.affect());
         }
-        return events;
+        return effects;
     }
 
 }

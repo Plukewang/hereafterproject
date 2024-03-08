@@ -1,6 +1,6 @@
 /*player object */
 import * as Mod from "./mods.js";
-import * as Stat from "./stats.js";
+import Stat from "./stats.js";
 
 class Player{
     constructor(name, stats, effects, traits, inventory){
@@ -27,27 +27,44 @@ class Player{
         return [this.stats, update]
     }
 
-    playerSkill(source, targets, techniques, priority){
-        let skill = new Skill(source, targets, techniques, priority);//TODO: action class
+    playerSkill(color, source, targets, techniques, priority){
+        let skill = new Skill(color, source, targets, techniques, priority);//TODO: action class
         //retrieve an available skill or construct a new one
         
         return skill;
     }
 
-    playerMove(source, targets, techniques, priority){
-        let move = new Move(source, targets, techniques, priority);//TODO: action class
+    playerMove(speed, source, targets, techniques, priority){
+        let move = new Move(speed, source, targets, techniques, priority);//TODO: action class
         //retrieve an available movement or construct a new one
         
         return move;
     }
 
-    playerEffect(effect){
+    playerEffect(effects){
         //makes a player take an effect
-        this.effects.push(effect);
+        this.effects.push(effects);
     }
     
-
+    playerStatCheck(stat){//stat is a 3-char full cap string denoting the stat
+        return this.stats[`${stat}`].statCheck;
+    }
 
 
 }
+
+function createPlayerStats(){
+    let playerStat = new Map();
+
+    playerStat.set("PHY", new Stat("PHY", 5, 6, 0));
+    playerStat.set("INT", new Stat("INT", 5, 6, 0));
+    playerStat.set("INS", new Stat("INS", 5, 6, 0));
+    playerStat.set("PRC", new Stat("PRC", 5, 6, 0));
+    playerStat.set("AGI", new Stat("AGI", 5, 6, 0));
+    playerStat.set("DPT", new Stat("DPT", 5, 6, 0));
+    playerStat.set("LVL", new Stat("PHY", 5, 6, 0));
+
+    return Object.fromEntries(playerStat.entries());
+}
 export default Player;
+export {createPlayerStats};
