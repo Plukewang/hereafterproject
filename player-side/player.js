@@ -4,6 +4,7 @@ import Stat from "./stats.js";
 
 class Player{
     constructor(name, stats, effects, traits, inventory){
+        
         this.name = name;
         this.stats = stats;
         this.effects = effects;
@@ -25,6 +26,10 @@ class Player{
         }
 
         return [this.stats, update]
+    }
+
+    SetStat(statName, val){
+        this.stats['StatName'].set(val);
     }
 
     playerSkill(color, source, targets, techniques, priority){
