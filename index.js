@@ -10,7 +10,7 @@ import 'dotenv/config';
 
 let database_url = process.env.DATABASE_URL;
 const app = express();
-const port = process.env.DEV_PORT;
+const port = process.env.PROD_PORT;
 /*const db = new pg.Client({
     host: "localhost",
     user: "postgres",
