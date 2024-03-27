@@ -20,6 +20,7 @@ await db.connect();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));//parses user requests
+app.get("/", (req, res) => res.send("Express on Vercel"));
 
 app.get("/players",async (req,res)=>{
     
