@@ -21,26 +21,46 @@ await db.connect();
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));//parses user requests
 
-app.get("/player",async (req,res)=>{
-    //test api json code TODO: link to player database
-    let Joe = new Player("Joe", createPlayerStats(), [], [], []);
+app.get("/players",async (req,res)=>{
+    
+    
     try{
-        res.json(Joe);
+
+        let result = await db.query(
+        'SELECT * FROM stats FULL OUTER JOIN players ON players.player_id = stats.player_id ORDER BY players.player_id ASC;'
+        );
+        let posts = result.rows;
+
+        res.json(posts);
+
     }catch(err){
         console.error(err);
     }
 })
 
 app.get("/player/check",async (req,res)=>{
-    //test api json code TODO: link to player database
-    let Joe = new Player("Joe", createPlayerStats(), [], [], []);
 
     try{
-        res.json(Joe.playerStatCheck("PHY"));
+        let result = await db.query("SELECT ($1) FROM stats WHERE player_id = (SELECT player_id FROM players WHERE player_name = ($2))",
+        [req.body.statName, req.body.playerName]);
+        let statcheck = result.rows;
+        res.json(statcheck);
     }catch(err){
         console.error(err);
     }
 })
+
+app.get("/compendium", async (req,res)=>{
+    try{
+        let result = await db.query("SELECT * FROM skills ORDER BY id ASC;",
+        []);
+        let cards = result.rows;
+        res.json(cards);
+
+    }catch(err){
+        console.error(err);
+    }
+});
 
 app.get("/blog",async (req,res)=>{
     //test api json code TODO: link to player database
@@ -85,7 +105,7 @@ app.post("/blog/delete", async (req,res)=>{
 app.patch("/blog/edit", async(req,res)=>{
     try{
         let result = await db.query('UPDATE blog SET title = ($1), post = ($2) WHERE id = ($3)',
-        [req.body.title, req.body.post, req.body.id] );
+        [req.body.title, req.body.editPost, req.body.id] );
         res.end();
     }catch(err){
         console.error(err);
