@@ -5,16 +5,19 @@ import Player from './player-side/player.js';
 import { createPlayerStats } from './player-side/player.js';
 import pg from "pg"
 
+
+let database_url = "postgresql://plukewang_utexas_edu:23b6TZzy99qbjXFr_9xOLg@blunt-cyclops-11192.6wr.aws-us-west-2.cockroachlabs.cloud:26257/hereafter?sslmode=verify-full";
 const app = express();
 const port = 8080;
-const db = new pg.Client({
+/*const db = new pg.Client({
     host: "localhost",
     user: "postgres",
     database: "hereafter",
     password: "dxy0430BIOON",
     port: "5432",
-})
-
+})*/
+const db = new pg.Client(database_url);
+//postgresql://
 await db.connect();
 
 
