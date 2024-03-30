@@ -93,55 +93,68 @@ app.get("/compendium", async (req,res)=>{
 });
 
 app.get("/blog",async (req,res)=>{
-    //simple retrieval of blog posts
+
     try{
 
         let result = await db.query('SELECT * FROM blog ORDER BY id DESC');
         let posts = result.rows;
 
         res.json(posts);
-
+        
     }catch(err){
         console.error(err);
     }
 })
 
+
+app.get("/blog/:blogid",async (req,res)=>{
+
+    try{
+
+        let result = await db.query('SELECT * FROM blog WHERE id = ($1)', [req.params.blogid]);
+        let post = result.rows[0];
+        res.json(post);
+        
+    }catch(err){
+        console.error(err);
+    }
+});
+
 app.post("/blog/post", async (req,res)=>{
-    //for adding blog posts
     try{
         
         let result = await db.query('INSERT INTO blog (title, post) VALUES ($1, $2);', 
         [req.body.title, req.body.post]
         );
-        
+        res.json(result.rows)
     }catch(err){
         console.error(err);
     }
 });
 
-app.post("/blog/delete", async (req,res)=>{
-    //blog delete route
+
+app.post("/blog/:blogid/delete", async (req,res)=>{
     try{
         
         let result = await db.query('DELETE FROM blog WHERE id = ($1);', 
-        [req.body.id]
+        [req.params.blogid]
         );
-        
+        res.redirect(`back`)
     }catch(err){
         console.error(err);
     }
 });
 
-app.patch("/blog/edit", async(req,res)=>{
-    //blog edit route via update
+app.post("/blog/:blogid/edit", async(req,res)=>{
+
     try{
         let result = await db.query('UPDATE blog SET title = ($1), post = ($2) WHERE id = ($3)',
-        [req.body.title, req.body.editPost, req.body.id] );
-        res.end();
+        [req.body.title, req.body.post, req.params.blogid] );
+        res.redirect(`back`)
     }catch(err){
         console.error(err);
     }
-})
+});
 //failure to sign into session
 app.get("/fail", (req,res)=>{
     res.json({message: "Failed."})
