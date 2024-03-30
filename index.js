@@ -24,7 +24,7 @@ const db = new pg.Client(database_url);
 await db.connect();
 
 
-app.use(cors());
+app.use(cors());//I hate cors.
 app.use(bodyParser.urlencoded({extended: true}));//parses user requests
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
@@ -32,7 +32,7 @@ app.get("/players",async (req,res)=>{
     
     
     try{
-
+        //for retrieving player information
         let result = await db.query(
         'SELECT * FROM stats FULL OUTER JOIN players ON players.player_id = stats.player_id ORDER BY players.player_id ASC;'
         );
@@ -70,9 +70,7 @@ app.get("/compendium", async (req,res)=>{
 });
 
 app.get("/blog",async (req,res)=>{
-    //test api json code TODO: link to player database
-    
-
+    //simple retrieval of blog posts
     try{
 
         let result = await db.query('SELECT * FROM blog ORDER BY id DESC');
@@ -86,6 +84,7 @@ app.get("/blog",async (req,res)=>{
 })
 
 app.post("/blog/post", async (req,res)=>{
+    //for adding blog posts
     try{
         
         let result = await db.query('INSERT INTO blog (title, post) VALUES ($1, $2);', 
@@ -98,6 +97,7 @@ app.post("/blog/post", async (req,res)=>{
 });
 
 app.post("/blog/delete", async (req,res)=>{
+    //blog delete route
     try{
         
         let result = await db.query('DELETE FROM blog WHERE id = ($1);', 
@@ -110,6 +110,7 @@ app.post("/blog/delete", async (req,res)=>{
 });
 
 app.patch("/blog/edit", async(req,res)=>{
+    //blog edit route via update
     try{
         let result = await db.query('UPDATE blog SET title = ($1), post = ($2) WHERE id = ($3)',
         [req.body.title, req.body.editPost, req.body.id] );
