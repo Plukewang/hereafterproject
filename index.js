@@ -8,7 +8,8 @@ import 'dotenv/config';
 import session from 'express-session';
 import passport from 'passport';
 import { Strategy } from 'passport-local';
-
+import MemoryStore from 'memorystore';
+const Memory = MemoryStore(session);
 
 const thewords = process.env.THE_WORDS;
 let database_url = process.env.DATABASE_URL;
@@ -40,6 +41,9 @@ app.use(
     cookie: {
         maxAge: 1000*60*60
     },
+    store: new Memory({
+        checkPeriod: 86400000 // prune expired entries every 24h
+      }),
 }))
 app.use(passport.initialize());
 app.use(passport.session());
