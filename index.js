@@ -5,9 +5,12 @@ import Player from './player-side/player.js';
 import { createPlayerStats } from './player-side/player.js';
 import pg from "pg"
 import 'dotenv/config';
+import session from 'express-session';
+import passport from 'passport';
+import { Strategy } from 'passport-local';
 
 
-
+const thewords = process.env.THE_WORDS;
 let database_url = process.env.DATABASE_URL;
 const app = express();
 const port = process.env.PROD_PORT;
@@ -24,8 +27,24 @@ const db = new pg.Client(database_url);
 await db.connect();
 
 
-app.use(cors());//I hate cors.
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 app.use(bodyParser.urlencoded({extended: true}));//parses user requests
+app.use(
+    session({
+    secret: "SECRET", 
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 1000*60*60
+    },
+}))
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
 app.get("/players",async (req,res)=>{
@@ -119,6 +138,60 @@ app.patch("/blog/edit", async(req,res)=>{
         console.error(err);
     }
 })
+//failure to sign into session
+app.get("/fail", (req,res)=>{
+    res.json({message: "Failed."})
+    res.end();
+});
+//successful sign in
+
+
+app.post("/session", passport.authenticate("local",{
+    failureRedirect: "/fail",
+}),(req,res)=>{
+    if(req.isAuthenticated()){
+
+        res.json({message: "Success."})
+        res.end();
+    }else{
+        res.redirect("/fail");
+    }
+});
+
+app.get("/sess", async(req,res)=>{
+ 
+    if(req.isAuthenticated()){
+        
+        console.log("Success!");
+        res.json({message: "Success."})
+        res.end();
+    }else{
+        res.redirect("/fail");
+    }
+});
+
+passport.use(
+    new Strategy(function verify(username, password, cb){
+        try{
+            const user = {name: "the one"};
+           
+            if(password===thewords){
+                return cb(null, user)
+            }else{
+                return cb(null, false);
+            }
+        }catch(err){
+            console.error(err);
+        }
+}))
+
+passport.serializeUser((user,cb)=>{
+    cb(null, user);
+});
+
+passport.deserializeUser((user,cb)=>{
+    cb(null, user);
+});
 
 app.listen(port, function(err){
     if (err) console.log("Error in server setup")
