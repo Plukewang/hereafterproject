@@ -92,6 +92,19 @@ app.get("/compendium", async (req,res)=>{
     }
 });
 
+app.get("/compendium/:cardId", async (req,res)=>{
+    try{
+        let result = await db.query("SELECT * FROM skills where id = ($1);",
+        [req.params.cardId]);
+        let cards = result.rows[0];
+        res.json(cards);
+
+    }catch(err){
+        console.error(err);
+    }
+});
+
+
 app.get("/blog",async (req,res)=>{
 
     try{
