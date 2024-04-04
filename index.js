@@ -176,6 +176,7 @@ app.get("/fail", (req,res)=>{
 
 
 app.post("/session", (req,res)=>{
+    console.log(req.body);
     if(req.body.password==thewords){
 
         res.json({message: "Success."})
