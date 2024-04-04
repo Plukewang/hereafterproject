@@ -12,7 +12,7 @@ import MemoryStore from 'memorystore';
 
 const Memory = MemoryStore(session);
 
-const thewords = "THE WORDS";
+const thewords = process.env.THE_WORDS;
 let database_url = process.env.DATABASE_URL;
 const app = express();
 const port = process.env.PROD_PORT;
@@ -176,7 +176,7 @@ app.get("/fail", (req,res)=>{
 
 
 app.post("/session", (req,res)=>{
-    console.log(req.body);
+    console.log(req.body.password, thewords, process.env.THE_WORDS);
     if(req.body.password==thewords){
 
         res.json({message: "Success."})
