@@ -12,7 +12,7 @@ import MemoryStore from 'memorystore';
 
 const Memory = MemoryStore(session);
 
-const thewords = process.env.THE_WORDS;
+const thewords = "THE WORDS";
 let database_url = process.env.DATABASE_URL;
 const app = express();
 const port = process.env.PROD_PORT;
