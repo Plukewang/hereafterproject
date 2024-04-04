@@ -41,7 +41,6 @@ app.use(
     saveUninitialized: true,
     cookie: {
         maxAge: 1000*60*60,
-        sameSite: "false",
     },
     store: new Memory({
         checkPeriod: 86400000 // prune expired entries every 24h
