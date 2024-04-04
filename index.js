@@ -9,6 +9,7 @@ import session from 'express-session';
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import MemoryStore from 'memorystore';
+
 const Memory = MemoryStore(session);
 
 const thewords = process.env.THE_WORDS;
@@ -39,7 +40,8 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-        maxAge: 1000*60*60
+        maxAge: 1000*60*60,
+        sameSite: "false",
     },
     store: new Memory({
         checkPeriod: 86400000 // prune expired entries every 24h
@@ -138,11 +140,11 @@ app.post("/blog/post", async (req,res)=>{
         [req.body.title, req.body.post]
         );
         res.json(result.rows)
+
     }catch(err){
         console.error(err);
     }
 });
-
 
 app.post("/blog/:blogid/delete", async (req,res)=>{
     try{
