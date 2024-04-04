@@ -176,10 +176,8 @@ app.get("/fail", (req,res)=>{
 //successful sign in
 
 
-app.post("/session", passport.authenticate("local",{
-    failureRedirect: "/fail",
-}),(req,res)=>{
-    if(req.isAuthenticated()){
+app.post("/session", (req,res)=>{
+    if(req.body.password==thewords){
 
         res.json({message: "Success."})
 
