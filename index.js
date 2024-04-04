@@ -91,7 +91,7 @@ app.get("/compendium", async (req,res)=>{
         console.error(err);
     }
 });
-
+//get individual cards
 app.get("/compendium/:cardId", async (req,res)=>{
     try{
         let result = await db.query("SELECT * FROM skills where id = ($1);",
@@ -103,7 +103,6 @@ app.get("/compendium/:cardId", async (req,res)=>{
         console.error(err);
     }
 });
-
 
 app.get("/blog",async (req,res)=>{
 
@@ -118,7 +117,6 @@ app.get("/blog",async (req,res)=>{
         console.error(err);
     }
 })
-
 
 app.get("/blog/:blogid",async (req,res)=>{
 
@@ -182,7 +180,7 @@ app.post("/session", passport.authenticate("local",{
     if(req.isAuthenticated()){
 
         res.json({message: "Success."})
-        res.end();
+
     }else{
         res.redirect("/fail");
     }
@@ -192,9 +190,9 @@ app.get("/sess", async(req,res)=>{
  
     if(req.isAuthenticated()){
         
-        console.log("Success!");
+
         res.json({message: "Success."})
-        res.end();
+
     }else{
         res.redirect("/fail");
     }
