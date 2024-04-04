@@ -175,8 +175,8 @@ app.get("/fail", (req,res)=>{
 //successful sign in
 
 
-app.post("/session", (req,res)=>{
-    console.log(req.body.password, thewords, process.env.THE_WORDS);
+app.post("/session", passport.authenticate('local'), (req,res)=>{
+    console.log(req.body.password, req.isAuthenticated());
     if(req.body.password==thewords){
 
         res.json({message: "Success."})
