@@ -81,6 +81,22 @@ app.get("/player/check",async (req,res)=>{
     }
 })
 
+app.get("/player/:playerid",async (req,res)=>{
+
+    try{
+        let result = await db.query('SELECT * FROM stats FULL OUTER JOIN players ON players.player_id = stats.player_id WHERE players.player_id = ($1)',
+        [req.params.playerid]);
+
+        let inv = await db.query("select * from items left join player_items on player_items.item_id = items.item_id where player_items.player_id = ($1);",
+        [req.params.playerid]);
+
+
+        res.json([result.rows, inv.rows]);
+    }catch(err){
+        console.error(err);
+    }
+});
+
 app.get("/compendium", async (req,res)=>{
     try{
         let result = await db.query("SELECT * FROM skills ORDER BY id ASC;",
