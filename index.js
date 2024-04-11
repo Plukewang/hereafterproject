@@ -90,8 +90,14 @@ app.get("/player/:playerid",async (req,res)=>{
         let inv = await db.query("select * from items left join player_items on player_items.item_id = items.item_id where player_items.player_id = ($1);",
         [req.params.playerid]);
 
+        const traits = await db.query('select * from traits left join player_traits on player_traits.trait_id = traits.id where player_traits.player_id = ($1);',
+        [req.params.playerid]);
 
-        res.json([result.rows, inv.rows]);
+        const skills = await db.query('select * from skills INNER join player_skills on player_skills.skill_id = skills.id where player_id = ($1);',
+        [req.params.playerid])
+
+
+        res.json([result.rows, inv.rows, traits.rows, skills.rows]);
     }catch(err){
         console.error(err);
     }
