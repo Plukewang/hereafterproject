@@ -15,7 +15,7 @@ const Memory = MemoryStore(session);
 const thewords = process.env.THE_WORDS;
 let database_url = process.env.DATABASE_URL;
 const app = express();
-const port = process.env.PROD_PORT;
+const port = process.env.DEV_PORT;
 
 /*const db = new pg.Client({
     host: "localhost",
@@ -56,7 +56,7 @@ app.get("/players",async (req,res)=>{
     
     
     try{
-        //for retrieving player information
+
         let result = await db.query(
         'SELECT * FROM stats FULL OUTER JOIN players ON players.player_id = stats.player_id ORDER BY players.player_id ASC;'
         );
@@ -64,17 +64,6 @@ app.get("/players",async (req,res)=>{
 
         res.json(posts);
 
-    }catch(err){
-        console.error(err);
-    }
-})
-app.get("/players/effects",async (req,res)=>{
-
-    try{
-        let result = await db.query("SELECT * FROM common_effects;",
-        []);
-        let commonEffects = result.rows;
-        res.json(commonEffects);
     }catch(err){
         console.error(err);
     }
@@ -107,8 +96,18 @@ app.get("/player/:playerid",async (req,res)=>{
         const skills = await db.query('select * from skills INNER join player_skills on player_skills.skill_id = skills.id where player_id = ($1);',
         [req.params.playerid])
 
-
         res.json([result.rows, inv.rows, traits.rows, skills.rows]);
+    }catch(err){
+        console.error(err);
+    }
+})
+
+app.get("/player/items/:playerid", async (req,res)=>{
+    try{
+        let result = await db.query("select * from items left join player_items on player_items.item_id = items.item_id where player_items.player_id = ($1);",
+        [req.params.playerid]);
+
+        res.json(result.rows);
     }catch(err){
         console.error(err);
     }
@@ -139,9 +138,9 @@ app.get("/compendium/:cardId", async (req,res)=>{
 });
 
 app.get("/blog",async (req,res)=>{
-
+    
     try{
-
+        
         let result = await db.query('SELECT * FROM blog ORDER BY id DESC');
         let posts = result.rows;
 
@@ -153,9 +152,8 @@ app.get("/blog",async (req,res)=>{
 })
 
 app.get("/blog/:blogid",async (req,res)=>{
-
     try{
-
+        
         let result = await db.query('SELECT * FROM blog WHERE id = ($1)', [req.params.blogid]);
         let post = result.rows[0];
         res.json(post);
@@ -165,14 +163,15 @@ app.get("/blog/:blogid",async (req,res)=>{
     }
 });
 
+
 app.post("/blog/post", async (req,res)=>{
     try{
-        
+ 
         let result = await db.query('INSERT INTO blog (title, post) VALUES ($1, $2);', 
         [req.body.title, req.body.post]
         );
         res.json(result.rows)
-
+        
     }catch(err){
         console.error(err);
     }
@@ -208,8 +207,9 @@ app.get("/fail", (req,res)=>{
 //successful sign in
 
 
-app.post("/session", passport.authenticate('local'), (req,res)=>{
-    //console.log(req.body.password, req.isAuthenticated());
+
+app.post("/session", passport.authenticate('local', {failureRedirect: '/fail'}), (req,res)=>{
+
     if(req.isAuthenticated()){
 
         res.json({message: "Success."})
@@ -219,13 +219,13 @@ app.post("/session", passport.authenticate('local'), (req,res)=>{
     }
 });
 
+
 app.get("/sess", async(req,res)=>{
- 
+    
     if(req.isAuthenticated()){
         
-
+        console.log("Success!");
         res.json({message: "Success."})
-
     }else{
         res.redirect("/fail");
     }
@@ -235,7 +235,7 @@ passport.use(
     new Strategy(function verify(username, password, cb){
         try{
             const user = {name: "the one"};
-           
+            console.log(password, thewords);
             if(password===thewords){
                 return cb(null, user)
             }else{
@@ -259,4 +259,3 @@ app.listen(port, function(err){
     console.log("Server listening on Port", port);
 })
 
-export default app;
