@@ -137,7 +137,17 @@ app.get("/compendium/:cardId", async (req,res)=>{
         console.error(err);
     }
 });
+//add a card into database
+app.post("/compendium/add", async (req,res)=>{
+    try{
+        let result = await db.query("INSERT INTO skills (skill_name, skill_description, skill_type, skill_cost) VALUES (($1), ($2), ($3), ($4));",
+        [req.body.name, req.body.desc, req.body.type, req.body.cost]);
+        res.redirect(`back`);
 
+    }catch(err){
+        console.error(err);
+    }
+});
 app.get("/blog",async (req,res)=>{
 
     try{
